@@ -20,347 +20,107 @@ jobs:
                 "title": "Awesome songs in opposite keys",
                 "properties": {
                   "link": "https://www.youtube.com/playlist?list=PL5ErBr2d3QJH0kbwTQ7HSuzvBb4zIWzhy",
-                  "videoCount": 53
+                  "videoCount": 20
                 }
               },
               {
-                "identifier": "v1",
-                "blueprint": "youtube_video",
-                "title": "The Pink Panther Theme (Major Key)",
-                "properties": {
-                  "title": "The Pink Panther Theme (Major Key)",
-                  "link": "https://youtu.be/2BkEorFwJGg",
-                  "views": 150000,
-                  "titleLength": 32,
-                  "descriptionWordCount": 250,
-                  "durationSeconds": 145,
-                  "isOfficialSource": true,
-                  "hasCustomThumbnail": true,
-                  "hasChapters": true
-                },
+                "identifier": "v1", "blueprint": "youtube_video", "title": "The Pink Panther Theme",
+                "properties": {"title": "The Pink Panther Theme", "isOfficialSource": true, "titleLength": 22, "durationSeconds": 145, "views": 150000, "likes": 12000, "link": "https://youtu.be/2BkEorFwJGg"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v2",
-                "blueprint": "youtube_video",
-                "title": "Pokémon Theme (Minor Key Edit)",
-                "properties": {
-                  "title": "Pokémon Theme (Minor Key Edit)",
-                  "link": "https://youtu.be/v_O6VfXvBf0",
-                  "views": 85000,
-                  "titleLength": 28,
-                  "descriptionWordCount": 120,
-                  "durationSeconds": 190,
-                  "isOfficialSource": false,
-                  "hasCustomThumbnail": true,
-                  "hasChapters": false
-                },
+                "identifier": "v2", "blueprint": "youtube_video", "title": "Pokémon Theme",
+                "properties": {"title": "Pokémon Theme", "isOfficialSource": false, "titleLength": 28, "durationSeconds": 190, "views": 85000, "likes": 4500, "link": "https://youtu.be/v_O6VfXvBf0"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v3",
-                "blueprint": "youtube_video",
-                "title": "Super Mario Bros Theme (Minor Key)",
-                "properties": {
-                  "title": "Super Mario Bros Theme (Minor Key)",
-                  "link": "https://youtu.be/u_PSTpAn0pI",
-                  "views": 125000,
-                  "titleLength": 36,
-                  "descriptionWordCount": 210,
-                  "durationSeconds": 110,
-                  "isOfficialSource": true,
-                  "hasCustomThumbnail": true,
-                  "hasChapters": true
-                },
+                "identifier": "v3", "blueprint": "youtube_video", "title": "Super Mario Theme",
+                "properties": {"title": "Super Mario Theme", "isOfficialSource": true, "titleLength": 17, "durationSeconds": 110, "views": 125000, "likes": 9800, "link": "https://youtu.be/u_PSTpAn0pI"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v4",
-                "blueprint": "youtube_video",
-                "title": "Harry Potter Hedwig's Theme (Major)",
-                "properties": {
-                  "title": "Harry Potter Hedwig's Theme (Major)",
-                  "link": "https://youtu.be/j72vS89Y_p4",
-                  "views": 98000,
-                  "titleLength": 35,
-                  "descriptionWordCount": 85,
-                  "durationSeconds": 240,
-                  "isOfficialSource": true,
-                  "hasCustomThumbnail": false,
-                  "hasChapters": false
-                },
+                "identifier": "v4", "blueprint": "youtube_video", "title": "Harry Potter Theme",
+                "properties": {"title": "Harry Potter Theme", "isOfficialSource": true, "titleLength": 18, "durationSeconds": 240, "views": 98000, "likes": 7200, "link": "https://youtu.be/j72vS89Y_p4"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v5",
-                "blueprint": "youtube_video",
-                "title": "Star Wars Imperial March (Major)",
-                "properties": {
-                  "title": "Star Wars Imperial March (Major)",
-                  "link": "https://youtu.be/test5",
-                  "views": 200000,
-                  "titleLength": 31,
-                  "descriptionWordCount": 300,
-                  "durationSeconds": 160,
-                  "isOfficialSource": true,
-                  "hasCustomThumbnail": true,
-                  "hasChapters": true
-                },
+                "identifier": "v5", "blueprint": "youtube_video", "title": "Star Wars Imperial March",
+                "properties": {"title": "Star Wars Imperial March", "isOfficialSource": true, "titleLength": 24, "durationSeconds": 160, "views": 300000, "likes": 25000, "link": "https://youtu.be/test5"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v6",
-                "blueprint": "youtube_video",
-                "title": "Queen - Bohemian Rhapsody (Minor)",
-                "properties": {
-                  "title": "Queen - Bohemian Rhapsody (Minor)",
-                  "link": "https://youtu.be/test6",
-                  "views": 500000,
-                  "titleLength": 33,
-                  "descriptionWordCount": 450,
-                  "durationSeconds": 355,
-                  "isOfficialSource": true,
-                  "hasCustomThumbnail": true,
-                  "hasChapters": true
-                },
+                "identifier": "v6", "blueprint": "youtube_video", "title": "Bohemian Rhapsody Edit",
+                "properties": {"title": "Bohemian Rhapsody Edit", "isOfficialSource": true, "titleLength": 22, "durationSeconds": 355, "views": 500000, "likes": 45000, "link": "https://youtu.be/test6"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v7",
-                "blueprint": "youtube_video",
-                "title": "Looney Tunes Theme (Minor)",
-                "properties": {
-                  "title": "Looney Tunes Theme (Minor)",
-                  "link": "https://youtu.be/test7",
-                  "views": 45000,
-                  "titleLength": 26,
-                  "descriptionWordCount": 50,
-                  "durationSeconds": 95,
-                  "isOfficialSource": false,
-                  "hasCustomThumbnail": false,
-                  "hasChapters": false
-                },
+                "identifier": "v7", "blueprint": "youtube_video", "title": "Looney Tunes Theme",
+                "properties": {"title": "Looney Tunes Theme", "isOfficialSource": false, "titleLength": 18, "durationSeconds": 95, "views": 45000, "likes": 2100, "link": "https://youtu.be/test7"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v8",
-                "blueprint": "youtube_video",
-                "title": "Game of Thrones Theme (Major)",
-                "properties": {
-                  "title": "Game of Thrones Theme (Major)",
-                  "link": "https://youtu.be/test8",
-                  "views": 320000,
-                  "titleLength": 29,
-                  "descriptionWordCount": 280,
-                  "durationSeconds": 130,
-                  "isOfficialSource": true,
-                  "hasCustomThumbnail": true,
-                  "hasChapters": true
-                },
+                "identifier": "v8", "blueprint": "youtube_video", "title": "Game of Thrones Theme",
+                "properties": {"title": "Game of Thrones Theme", "isOfficialSource": true, "titleLength": 21, "durationSeconds": 130, "views": 320000, "likes": 18000, "link": "https://youtu.be/test8"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v9",
-                "blueprint": "youtube_video",
-                "title": "The Legend of Zelda Theme (Minor)",
-                "properties": {
-                  "title": "The Legend of Zelda Theme (Minor)",
-                  "link": "https://youtu.be/test9",
-                  "views": 110000,
-                  "titleLength": 33,
-                  "descriptionWordCount": 190,
-                  "durationSeconds": 140,
-                  "isOfficialSource": false,
-                  "hasCustomThumbnail": true,
-                  "hasChapters": true
-                },
+                "identifier": "v9", "blueprint": "youtube_video", "title": "Zelda Theme (Minor)",
+                "properties": {"title": "Zelda Theme (Minor)", "isOfficialSource": false, "titleLength": 18, "durationSeconds": 140, "views": 110000, "likes": 6700, "link": "https://youtu.be/test9"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v10",
-                "blueprint": "youtube_video",
-                "title": "Tetris Theme (Major Key)",
-                "properties": {
-                  "title": "Tetris Theme (Major Key)",
-                  "link": "https://youtu.be/test10",
-                  "views": 67000,
-                  "titleLength": 24,
-                  "descriptionWordCount": 110,
-                  "durationSeconds": 85,
-                  "isOfficialSource": true,
-                  "hasCustomThumbnail": false,
-                  "hasChapters": false
-                },
+                "identifier": "v10", "blueprint": "youtube_video", "title": "Tetris Theme Major",
+                "properties": {"title": "Tetris Theme Major", "isOfficialSource": true, "titleLength": 18, "durationSeconds": 85, "views": 67000, "likes": 3200, "link": "https://youtu.be/test10"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v11",
-                "blueprint": "youtube_video",
-                "title": "Disney - Frozen Let it Go (Minor)",
-                "properties": {
-                  "title": "Disney - Frozen Let it Go (Minor)",
-                  "link": "https://youtu.be/test11",
-                  "views": 1000000,
-                  "titleLength": 33,
-                  "descriptionWordCount": 600,
-                  "durationSeconds": 220,
-                  "isOfficialSource": true,
-                  "hasCustomThumbnail": true,
-                  "hasChapters": true
-                },
+                "identifier": "v11", "blueprint": "youtube_video", "title": "Frozen - Let it Go",
+                "properties": {"title": "Frozen - Let it Go", "isOfficialSource": true, "titleLength": 18, "durationSeconds": 220, "views": 1000000, "likes": 85000, "link": "https://youtu.be/test11"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v12",
-                "blueprint": "youtube_video",
-                "title": "Pirates of the Caribbean (Major)",
-                "properties": {
-                  "title": "Pirates of the Caribbean (Major)",
-                  "link": "https://youtu.be/test12",
-                  "views": 430000,
-                  "titleLength": 32,
-                  "descriptionWordCount": 240,
-                  "durationSeconds": 150,
-                  "isOfficialSource": true,
-                  "hasCustomThumbnail": true,
-                  "hasChapters": true
-                },
+                "identifier": "v12", "blueprint": "youtube_video", "title": "Pirates of the Caribbean",
+                "properties": {"title": "Pirates of the Caribbean", "isOfficialSource": true, "titleLength": 24, "durationSeconds": 150, "views": 430000, "likes": 22000, "link": "https://youtu.be/test12"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v13",
-                "blueprint": "youtube_video",
-                "title": "Avengers Theme (Minor Key)",
-                "properties": {
-                  "title": "Avengers Theme (Minor Key)",
-                  "link": "https://youtu.be/test13",
-                  "views": 280000,
-                  "titleLength": 26,
-                  "descriptionWordCount": 150,
-                  "durationSeconds": 185,
-                  "isOfficialSource": false,
-                  "hasCustomThumbnail": true,
-                  "hasChapters": false
-                },
+                "identifier": "v13", "blueprint": "youtube_video", "title": "Avengers Theme",
+                "properties": {"title": "Avengers Theme", "isOfficialSource": false, "titleLength": 14, "durationSeconds": 185, "views": 280000, "likes": 15000, "link": "https://youtu.be/test13"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v14",
-                "blueprint": "youtube_video",
-                "title": "The Simpsons Theme (Minor)",
-                "properties": {
-                  "title": "The Simpsons Theme (Minor)",
-                  "link": "https://youtu.be/test14",
-                  "views": 55000,
-                  "titleLength": 26,
-                  "descriptionWordCount": 90,
-                  "durationSeconds": 105,
-                  "isOfficialSource": true,
-                  "hasCustomThumbnail": false,
-                  "hasChapters": false
-                },
+                "identifier": "v14", "blueprint": "youtube_video", "title": "The Simpsons Theme",
+                "properties": {"title": "The Simpsons Theme", "isOfficialSource": true, "titleLength": 18, "durationSeconds": 105, "views": 55000, "likes": 4100, "link": "https://youtu.be/test14"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v15",
-                "blueprint": "youtube_video",
-                "title": "Bond 007 Theme (Major Key)",
-                "properties": {
-                  "title": "Bond 007 Theme (Major Key)",
-                  "link": "https://youtu.be/test15",
-                  "views": 190000,
-                  "titleLength": 26,
-                  "descriptionWordCount": 220,
-                  "durationSeconds": 125,
-                  "isOfficialSource": true,
-                  "hasCustomThumbnail": true,
-                  "hasChapters": true
-                },
+                "identifier": "v15", "blueprint": "youtube_video", "title": "Bond 007 Theme",
+                "properties": {"title": "Bond 007 Theme", "isOfficialSource": true, "titleLength": 15, "durationSeconds": 125, "views": 190000, "likes": 11000, "link": "https://youtu.be/test15"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v16",
-                "blueprint": "youtube_video",
-                "title": "Mission Impossible (Major)",
-                "properties": {
-                  "title": "Mission Impossible (Major)",
-                  "link": "https://youtu.be/test16",
-                  "views": 140000,
-                  "titleLength": 26,
-                  "descriptionWordCount": 170,
-                  "durationSeconds": 140,
-                  "isOfficialSource": false,
-                  "hasCustomThumbnail": true,
-                  "hasChapters": false
-                },
+                "identifier": "v16", "blueprint": "youtube_video", "title": "Mission Impossible",
+                "properties": {"title": "Mission Impossible", "isOfficialSource": false, "titleLength": 18, "durationSeconds": 140, "views": 140000, "likes": 8900, "link": "https://youtu.be/test16"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v17",
-                "blueprint": "youtube_video",
-                "title": "Jurassic Park Theme (Minor)",
-                "properties": {
-                  "title": "Jurassic Park Theme (Minor)",
-                  "link": "https://youtu.be/test17",
-                  "views": 310000,
-                  "titleLength": 27,
-                  "descriptionWordCount": 260,
-                  "durationSeconds": 210,
-                  "isOfficialSource": true,
-                  "hasCustomThumbnail": true,
-                  "hasChapters": true
-                },
+                "identifier": "v17", "blueprint": "youtube_video", "title": "Jurassic Park Theme",
+                "properties": {"title": "Jurassic Park Theme", "isOfficialSource": true, "titleLength": 19, "durationSeconds": 210, "views": 310000, "likes": 14000, "link": "https://youtu.be/test17"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v18",
-                "blueprint": "youtube_video",
-                "title": "Godfather Theme (Major Key)",
-                "properties": {
-                  "title": "Godfather Theme (Major Key)",
-                  "link": "https://youtu.be/test18",
-                  "views": 88000,
-                  "titleLength": 27,
-                  "descriptionWordCount": 130,
-                  "durationSeconds": 180,
-                  "isOfficialSource": true,
-                  "hasCustomThumbnail": false,
-                  "hasChapters": false
-                },
+                "identifier": "v18", "blueprint": "youtube_video", "title": "Godfather Theme",
+                "properties": {"title": "Godfather Theme", "isOfficialSource": true, "titleLength": 15, "durationSeconds": 180, "views": 88000, "likes": 5200, "link": "https://youtu.be/test18"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v19",
-                "blueprint": "youtube_video",
-                "title": "Indiana Jones Theme (Minor)",
-                "properties": {
-                  "title": "Indiana Jones Theme (Minor)",
-                  "link": "https://youtu.be/test19",
-                  "views": 120000,
-                  "titleLength": 27,
-                  "descriptionWordCount": 180,
-                  "durationSeconds": 155,
-                  "isOfficialSource": false,
-                  "hasCustomThumbnail": true,
-                  "hasChapters": true
-                },
+                "identifier": "v19", "blueprint": "youtube_video", "title": "Indiana Jones Theme",
+                "properties": {"title": "Indiana Jones Theme", "isOfficialSource": false, "titleLength": 19, "durationSeconds": 155, "views": 120000, "likes": 7600, "link": "https://youtu.be/test19"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               },
               {
-                "identifier": "v20",
-                "blueprint": "youtube_video",
-                "title": "Long SEO Test Video Title That is Way Too Long for Youtube",
-                "properties": {
-                  "title": "Long SEO Test Video Title That is Way Too Long for Youtube",
-                  "link": "https://youtu.be/test20",
-                  "views": 5000,
-                  "titleLength": 105,
-                  "descriptionWordCount": 40,
-                  "durationSeconds": 450,
-                  "isOfficialSource": false,
-                  "hasCustomThumbnail": false,
-                  "hasChapters": false
-                },
+                "identifier": "v20", "blueprint": "youtube_video", "title": "Long SEO Test Video Title That is Way Too Long",
+                "properties": {"title": "Long SEO Test Video Title That is Way Too Long", "isOfficialSource": false, "titleLength": 48, "durationSeconds": 450, "views": 5000, "likes": 150, "link": "https://youtu.be/test20"},
                 "relations": {"playlist": "awesome_opposite_keys_playlist"}
               }
             ]
