@@ -9,68 +9,55 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Fetch and Format YouTube Data
-        id: youtube_data
+      - name: Fetch YouTube Data
+        id: fetch
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           PLAYLIST_ID: "PL5ErBr2d3QJH0kbwTQ7HSuzvBb4zIWzhy"
         run: |
           pip install requests isodate
-          python - <<EOF
+          python -c "
           import requests, os, json, isodate
+          key = os.environ['YOUTUBE_API_KEY']
+          pid = os.environ['PLAYLIST_ID']
           
-          def get_entities():
-              api_key = os.environ['YOUTUBE_API_KEY']
-              playlist_id = os.environ['PLAYLIST_ID']
-              
-              # Fetch Playlist metadata
-              pl_res = requests.get(f"https://www.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&id={playlist_id}&key={api_key}").json()["items"][0]
-              
-              # Initialize entities list with the Playlist itself
-              entities = [{
-                  "identifier": playlist_id,
-                  "blueprint": "youtube_playlist",
-                  "title": pl_res["snippet"]["title"],
-                  "properties": {
-                      "link": f"https://www.youtube.com/playlist?list={playlist_id}",
-                      "video_count": pl_res["contentDetails"]["itemCount"]
-                  }
-              }]
-
-              # Fetch up to 50 items from the Playlist
-              v_items = requests.get(f"https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=50&playlistId={playlist_id}&key={api_key}").json().get("items", [])
-              
-              for item in v_items:
-                  v_id = item["contentDetails"]["videoId"]
-                  v_title = item["snippet"]["title"]
-                  
-                  # Fetch specific video metrics (Views, Likes, Duration)
-                  v_info = requests.get(f"https://www.googleapis.com/youtube/v3/videos?part=statistics,contentDetails,snippet&id={v_id}&key={api_key}").json()["items"][0]
-                  
-                  # Create Video Entity with dynamic properties
-                  entities.append({
-                      "identifier": v_id,
-                      "blueprint": "youtube_video",
-                      "title": v_title,
-                      "properties": {
-                          "title": v_title,
-                          "link": f"https://www.youtube.com/watch?v={v_id}",
-                          "views": int(v_info["statistics"].get("viewCount", 0)),
-                          "likes": int(v_info["statistics"].get("likeCount", 0)),
-                          "titleLength": len(v_title),
-                          "durationSeconds": int(isodate.parse_duration(v_info["contentDetails"]["duration"]).total_seconds()),
-                          "isOfficialSource": v_info["contentDetails"].get("licensedContent", False),
-                          "thumbnail": item["snippet"]["thumbnails"]["high"]["url"],
-                          "publishedAt": item["snippet"]["publishedAt"]
-                      },
-                      "relations": {"playlist": playlist_id}
-                  })
-              return entities
-
-          # Export the dynamic list to GitHub Actions Output
-          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-              f.write(f"entities={json.dumps(get_entities())}\n")
-          EOF
+          # Get Playlist Data
+          pl_url = f'https://www.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&id={pid}&key={key}'
+          pl = requests.get(pl_url).json()['items'][0]
+          
+          entities = [{
+              'identifier': pid, 
+              'blueprint': 'youtube_playlist', 
+              'title': pl['snippet']['title'], 
+              'properties': {
+                  'link': f'https://www.youtube.com/playlist?list={pid}', 
+                  'video_count': pl['contentDetails']['itemCount']
+              }
+          }]
+          
+          # Get Videos Data
+          v_url = f'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=50&playlistId={pid}&key={key}'
+          v_data = requests.get(v_url).json().get('items', [])
+          
+          for item in v_data:
+              vid = item['contentDetails']['videoId']
+              v_info = requests.get(f'https://www.googleapis.com/youtube/v3/videos?part=statistics,contentDetails&id={vid}&key={key}').json()['items'][0]
+              entities.append({
+                  'identifier': vid, 
+                  'blueprint': 'youtube_video', 
+                  'title': item['snippet']['title'],
+                  'properties': {
+                      'link': f'https://www.youtube.com/watch?v={vid}',
+                      'views': int(v_info['statistics'].get('viewCount', 0)),
+                      'likes': int(v_info['statistics'].get('likeCount', 0)),
+                      'durationSeconds': int(isodate.parse_duration(v_info['contentDetails']['duration']).total_seconds())
+                  },
+                  'relations': {'playlist': pid}
+              })
+          
+          with open('entities.json', 'w') as f:
+              json.dump(entities, f)
+          "
 
       - name: Bulk Upsert to Port
         uses: port-labs/port-github-action@v1
@@ -78,5 +65,4 @@ jobs:
           clientId: ${{ secrets.PORT_CLIENT_ID }}
           clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
           operation: BULK_UPSERT
-          # This maps the YouTube data directly to your Port Blueprints
-          entities: ${{ steps.youtube_data.outputs.entities }}
+          entities-file: ./entities.json
