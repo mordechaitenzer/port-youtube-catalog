@@ -1,0 +1,62 @@
+name: Ingest Youtube Playlist to Port
+on:
+  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
+
+jobs:
+  ingest-to-port:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Playlist Entity
+        uses: port-labs/port-github-action@v1
+        with:
+          identifier: "awesome_opposite_keys_playlist"
+          blueprint: "youtube_playlist"
+          title: "Awesome songs in opposite keys"
+          properties: |
+            {
+              "link": "https://www.youtube.com/playlist?list=PL5ErBr2d3QJH0kbwTQ7HSuzvBb4zIWzhy",
+              "videoCount": 53
+            }
+          clientId: ${{ secrets.PORT_CLIENT_ID }}
+          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+          operation: UPSERT
+
+      - name: Create Video 1 - Pink Panther
+        uses: port-labs/port-github-action@v1
+        with:
+          identifier: "pink_panther_video"
+          blueprint: "youtube_video"
+          title: "The Pink Panther Theme (Major Key Edit)"
+          properties: |
+            {
+              "link": "https://www.youtube.com/watch?v=2BkEorFwJGg",
+              "views": 150000,
+              "thumbnail": "https://img.youtube.com/vi/2BkEorFwJGg/0.jpg"
+            }
+          relations: |
+            {
+              "playlist": "awesome_opposite_keys_playlist"
+            }
+          clientId: ${{ secrets.PORT_CLIENT_ID }}
+          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+          operation: UPSERT
+
+      - name: Create Video 2 - Pokémon
+        uses: port-labs/port-github-action@v1
+        with:
+          identifier: "pokemon_video"
+          blueprint: "youtube_video"
+          title: "Pokémon Theme (Minor Key Edit)"
+          properties: |
+            {
+              "link": "https://www.youtube.com/watch?v=v_O6VfXvBf0",
+              "views": 85000,
+              "thumbnail": "https://img.youtube.com/vi/v_O6VfXvBf0/0.jpg"
+            }
+          relations: |
+            {
+              "playlist": "awesome_opposite_keys_playlist"
+            }
+          clientId: ${{ secrets.PORT_CLIENT_ID }}
+          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+          operation: UPSERT
