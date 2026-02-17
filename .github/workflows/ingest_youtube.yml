@@ -16,48 +16,62 @@ jobs:
           PLAYLIST_ID: "PL5ErBr2d3QJH0kbwTQ7HSuzvBb4zIWzhy"
         run: |
           pip install requests isodate
-          python -c "
+          python - <<EOF
           import requests, os, json, isodate
+          
           key = os.environ['YOUTUBE_API_KEY']
           pid = os.environ['PLAYLIST_ID']
-          
-          # Get Playlist Data
-          pl_url = f'https://www.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&id={pid}&key={key}'
-          pl = requests.get(pl_url).json()['items'][0]
-          
-          entities = [{
-              'identifier': pid, 
-              'blueprint': 'youtube_playlist', 
-              'title': pl['snippet']['title'], 
-              'properties': {
-                  'link': f'https://www.youtube.com/playlist?list={pid}', 
-                  'video_count': pl['contentDetails']['itemCount']
-              }
-          }]
-          
-          # Get Videos Data
-          v_url = f'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=50&playlistId={pid}&key={key}'
-          v_data = requests.get(v_url).json().get('items', [])
-          
-          for item in v_data:
-              vid = item['contentDetails']['videoId']
-              v_info = requests.get(f'https://www.googleapis.com/youtube/v3/videos?part=statistics,contentDetails&id={vid}&key={key}').json()['items'][0]
-              entities.append({
-                  'identifier': vid, 
-                  'blueprint': 'youtube_video', 
-                  'title': item['snippet']['title'],
-                  'properties': {
-                      'link': f'https://www.youtube.com/watch?v={vid}',
-                      'views': int(v_info['statistics'].get('viewCount', 0)),
-                      'likes': int(v_info['statistics'].get('likeCount', 0)),
-                      'durationSeconds': int(isodate.parse_duration(v_info['contentDetails']['duration']).total_seconds())
-                  },
-                  'relations': {'playlist': pid}
-              })
-          
-          with open('entities.json', 'w') as f:
-              json.dump(entities, f)
-          "
+          entities = []
+
+          try:
+              # 1. Get Playlist Metadata
+              pl_url = f"https://www.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&id={pid}&key={key}"
+              pl_resp = requests.get(pl_url).json()
+              
+              if 'items' in pl_resp and len(pl_resp['items']) > 0:
+                  pl = pl_resp['items'][0]
+                  entities.append({
+                      'identifier': pid,
+                      'blueprint': 'youtube_playlist',
+                      'title': pl['snippet']['title'],
+                      'properties': {
+                          'link': f'https://www.youtube.com/playlist?list={pid}',
+                          'video_count': pl['contentDetails']['itemCount']
+                      }
+                  })
+
+                  # 2. Get Videos in Playlist
+                  v_url = f"https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=50&playlistId={pid}&key={key}"
+                  v_data = requests.get(v_url).json().get('items', [])
+
+                  for item in v_data:
+                      vid = item['contentDetails']['videoId']
+                      # Fetch specific video stats
+                      v_info_url = f"https://www.googleapis.com/youtube/v3/videos?part=statistics,contentDetails&id={vid}&key={key}"
+                      v_info_resp = requests.get(v_info_url).json()
+                      
+                      if 'items' in v_info_resp and len(v_info_resp['items']) > 0:
+                          v_info = v_info_resp['items'][0]
+                          entities.append({
+                              'identifier': vid,
+                              'blueprint': 'youtube_video',
+                              'title': item['snippet']['title'],
+                              'properties': {
+                                  'link': f'https://www.youtube.com/watch?v={vid}',
+                                  'views': int(v_info['statistics'].get('viewCount', 0)),
+                                  'likes': int(v_info['statistics'].get('likeCount', 0)),
+                                  'durationSeconds': int(isodate.parse_duration(v_info['contentDetails']['duration']).total_seconds())
+                              },
+                              'relations': {'playlist': pid}
+                          })
+              
+              with open('entities.json', 'w') as f:
+                  json.dump(entities, f)
+                  
+          except Exception as e:
+              print(f"Error occurred: {e}")
+              exit(1)
+          EOF
 
       - name: Bulk Upsert to Port
         uses: port-labs/port-github-action@v1
