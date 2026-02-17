@@ -6,121 +6,77 @@ jobs:
   ingest-to-port:
     runs-on: ubuntu-latest
     steps:
-      - name: Bulk Upsert Playlist and Videos
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Fetch and Format YouTube Data
+        id: youtube_data
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          PLAYLIST_ID: "PL5ErBr2d3QJH0kbwTQ7HSuzvBb4zIWzhy"
+        run: |
+          pip install requests isodate
+          python - <<EOF
+          import requests, os, json, isodate
+          
+          def get_entities():
+              api_key = os.environ['YOUTUBE_API_KEY']
+              playlist_id = os.environ['PLAYLIST_ID']
+              
+              # Fetch Playlist metadata
+              pl_res = requests.get(f"https://www.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&id={playlist_id}&key={api_key}").json()["items"][0]
+              
+              # Initialize entities list with the Playlist itself
+              entities = [{
+                  "identifier": playlist_id,
+                  "blueprint": "youtube_playlist",
+                  "title": pl_res["snippet"]["title"],
+                  "properties": {
+                      "link": f"https://www.youtube.com/playlist?list={playlist_id}",
+                      "video_count": pl_res["contentDetails"]["itemCount"]
+                  }
+              }]
+
+              # Fetch up to 50 items from the Playlist
+              v_items = requests.get(f"https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=50&playlistId={playlist_id}&key={api_key}").json().get("items", [])
+              
+              for item in v_items:
+                  v_id = item["contentDetails"]["videoId"]
+                  v_title = item["snippet"]["title"]
+                  
+                  # Fetch specific video metrics (Views, Likes, Duration)
+                  v_info = requests.get(f"https://www.googleapis.com/youtube/v3/videos?part=statistics,contentDetails,snippet&id={v_id}&key={api_key}").json()["items"][0]
+                  
+                  # Create Video Entity with dynamic properties
+                  entities.append({
+                      "identifier": v_id,
+                      "blueprint": "youtube_video",
+                      "title": v_title,
+                      "properties": {
+                          "title": v_title,
+                          "link": f"https://www.youtube.com/watch?v={v_id}",
+                          "views": int(v_info["statistics"].get("viewCount", 0)),
+                          "likes": int(v_info["statistics"].get("likeCount", 0)),
+                          "titleLength": len(v_title),
+                          "durationSeconds": int(isodate.parse_duration(v_info["contentDetails"]["duration"]).total_seconds()),
+                          "isOfficialSource": v_info["contentDetails"].get("licensedContent", False),
+                          "thumbnail": item["snippet"]["thumbnails"]["high"]["url"],
+                          "publishedAt": item["snippet"]["publishedAt"]
+                      },
+                      "relations": {"playlist": playlist_id}
+                  })
+              return entities
+
+          # Export the dynamic list to GitHub Actions Output
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f"entities={json.dumps(get_entities())}\n")
+          EOF
+
+      - name: Bulk Upsert to Port
         uses: port-labs/port-github-action@v1
         with:
           clientId: ${{ secrets.PORT_CLIENT_ID }}
           clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
           operation: BULK_UPSERT
-          entities: |
-            [
-              {
-                "identifier": "awesome_opposite_keys_playlist",
-                "blueprint": "youtube_playlist",
-                "title": "Awesome songs in opposite keys",
-                "properties": {
-                  "link": "https://www.youtube.com/playlist?list=PL5ErBr2d3QJH0kbwTQ7HSuzvBb4zIWzhy",
-                  "videoCount": 20
-                }
-              },
-              {
-                "identifier": "v1", "blueprint": "youtube_video", "title": "The Pink Panther Theme",
-                "properties": {"title": "The Pink Panther Theme", "isOfficialSource": true, "titleLength": 22, "durationSeconds": 145, "views": 150000, "likes": 12000, "link": "https://youtu.be/2BkEorFwJGg"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v2", "blueprint": "youtube_video", "title": "Pokémon Theme",
-                "properties": {"title": "Pokémon Theme", "isOfficialSource": false, "titleLength": 28, "durationSeconds": 190, "views": 85000, "likes": 4500, "link": "https://youtu.be/v_O6VfXvBf0"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v3", "blueprint": "youtube_video", "title": "Super Mario Theme",
-                "properties": {"title": "Super Mario Theme", "isOfficialSource": true, "titleLength": 17, "durationSeconds": 110, "views": 125000, "likes": 9800, "link": "https://youtu.be/u_PSTpAn0pI"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v4", "blueprint": "youtube_video", "title": "Harry Potter Theme",
-                "properties": {"title": "Harry Potter Theme", "isOfficialSource": true, "titleLength": 18, "durationSeconds": 240, "views": 98000, "likes": 7200, "link": "https://youtu.be/j72vS89Y_p4"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v5", "blueprint": "youtube_video", "title": "Star Wars Imperial March",
-                "properties": {"title": "Star Wars Imperial March", "isOfficialSource": true, "titleLength": 24, "durationSeconds": 160, "views": 300000, "likes": 25000, "link": "https://youtu.be/test5"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v6", "blueprint": "youtube_video", "title": "Bohemian Rhapsody Edit",
-                "properties": {"title": "Bohemian Rhapsody Edit", "isOfficialSource": true, "titleLength": 22, "durationSeconds": 355, "views": 500000, "likes": 45000, "link": "https://youtu.be/test6"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v7", "blueprint": "youtube_video", "title": "Looney Tunes Theme",
-                "properties": {"title": "Looney Tunes Theme", "isOfficialSource": false, "titleLength": 18, "durationSeconds": 95, "views": 45000, "likes": 2100, "link": "https://youtu.be/test7"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v8", "blueprint": "youtube_video", "title": "Game of Thrones Theme",
-                "properties": {"title": "Game of Thrones Theme", "isOfficialSource": true, "titleLength": 21, "durationSeconds": 130, "views": 320000, "likes": 18000, "link": "https://youtu.be/test8"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v9", "blueprint": "youtube_video", "title": "Zelda Theme (Minor)",
-                "properties": {"title": "Zelda Theme (Minor)", "isOfficialSource": false, "titleLength": 18, "durationSeconds": 140, "views": 110000, "likes": 6700, "link": "https://youtu.be/test9"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v10", "blueprint": "youtube_video", "title": "Tetris Theme Major",
-                "properties": {"title": "Tetris Theme Major", "isOfficialSource": true, "titleLength": 18, "durationSeconds": 85, "views": 67000, "likes": 3200, "link": "https://youtu.be/test10"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v11", "blueprint": "youtube_video", "title": "Frozen - Let it Go",
-                "properties": {"title": "Frozen - Let it Go", "isOfficialSource": true, "titleLength": 18, "durationSeconds": 220, "views": 1000000, "likes": 85000, "link": "https://youtu.be/test11"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v12", "blueprint": "youtube_video", "title": "Pirates of the Caribbean",
-                "properties": {"title": "Pirates of the Caribbean", "isOfficialSource": true, "titleLength": 24, "durationSeconds": 150, "views": 430000, "likes": 22000, "link": "https://youtu.be/test12"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v13", "blueprint": "youtube_video", "title": "Avengers Theme",
-                "properties": {"title": "Avengers Theme", "isOfficialSource": false, "titleLength": 14, "durationSeconds": 185, "views": 280000, "likes": 15000, "link": "https://youtu.be/test13"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v14", "blueprint": "youtube_video", "title": "The Simpsons Theme",
-                "properties": {"title": "The Simpsons Theme", "isOfficialSource": true, "titleLength": 18, "durationSeconds": 105, "views": 55000, "likes": 4100, "link": "https://youtu.be/test14"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v15", "blueprint": "youtube_video", "title": "Bond 007 Theme",
-                "properties": {"title": "Bond 007 Theme", "isOfficialSource": true, "titleLength": 15, "durationSeconds": 125, "views": 190000, "likes": 11000, "link": "https://youtu.be/test15"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v16", "blueprint": "youtube_video", "title": "Mission Impossible",
-                "properties": {"title": "Mission Impossible", "isOfficialSource": false, "titleLength": 18, "durationSeconds": 140, "views": 140000, "likes": 8900, "link": "https://youtu.be/test16"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v17", "blueprint": "youtube_video", "title": "Jurassic Park Theme",
-                "properties": {"title": "Jurassic Park Theme", "isOfficialSource": true, "titleLength": 19, "durationSeconds": 210, "views": 310000, "likes": 14000, "link": "https://youtu.be/test17"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v18", "blueprint": "youtube_video", "title": "Godfather Theme",
-                "properties": {"title": "Godfather Theme", "isOfficialSource": true, "titleLength": 15, "durationSeconds": 180, "views": 88000, "likes": 5200, "link": "https://youtu.be/test18"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v19", "blueprint": "youtube_video", "title": "Indiana Jones Theme",
-                "properties": {"title": "Indiana Jones Theme", "isOfficialSource": false, "titleLength": 19, "durationSeconds": 155, "views": 120000, "likes": 7600, "link": "https://youtu.be/test19"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              },
-              {
-                "identifier": "v20", "blueprint": "youtube_video", "title": "Long SEO Test Video Title That is Way Too Long",
-                "properties": {"title": "Long SEO Test Video Title That is Way Too Long", "isOfficialSource": false, "titleLength": 48, "durationSeconds": 450, "views": 5000, "likes": 150, "link": "https://youtu.be/test20"},
-                "relations": {"playlist": "awesome_opposite_keys_playlist"}
-              }
-            ]
+          # This maps the YouTube data directly to your Port Blueprints
+          entities: ${{ steps.youtube_data.outputs.entities }}
