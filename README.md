@@ -32,21 +32,22 @@ At Port buildiung your softwarew catalog is comprised of two steps:
 2. **Ingest data to software catalog**
 
 In order to define your data model, Port provides you with no code elements called "blueprints" and "relations".
-**Blueprints** are the building blocks of your catalog. Think of them as the "classes" or "schemas" for your data. 
 
+
+**Blueprints** are the building blocks of your catalog. Think of them as the "classes" or "schemas" for your data. 
 For this guide, you will create two blueprints: **YouTube Playlist** and **YouTube Video**.
 
 ### Setup Blueprints
 
-Each blueprint follows the same structure.
-| Field                 | Description                                                                   | Notes                                   |
-|---------------------- |-------------------------------------------------------------------------------|-----------------------------------------|
-| `identifier`          | Used for API calls, programmatic access, and distinguishing between blueprints| Required (max 100 characters)           |
-| `title`               | Human-readable name for the blueprint                                         | Required (max 100 characters)           |
-| `description`         | Visible as a tooltip when hovering over the info icon in the UI               |                                         |
-| `icon`                | Icon for the blueprint and its entities                                       | See full icon list below                |
-| `schema`              | Object containing `properties` and `required` fields                          | Required (see schema structure)         |
-| `properties`           | Defines how ownership of entities is determined                               | See ownership section for details      |
+All blueprints follow the same structure.
+| Field           | Description                                                                               | Notes                                        |
+|-----------------|-------------------------------------------------------------------------------------------|----------------------------------------------|
+| `identifier`    | Used for API calls, programmatic access, and distinguishing between blueprints            | Required (max 100 characters)                |
+| `title`         | Human-readable name for the blueprint                                                     | Required (max 100 characters)                |
+| `description`   | Visible as a tooltip when hovering over the info icon in the UI                           |                                              |
+| `icon`          | Icon for the blueprint and its entities                                                   | You can only use icons from a predefined list|
+| `schema`        | Object containing `properties` and `required` fields                                      | Required (see schema structure)              |
+| `properties`    | customizable data fields, used to save and display information from external data sources.| See ownership section for details            |
 
 
 An entity is an instance of a blueprint, it represents the data defined by a blueprint's properties.
