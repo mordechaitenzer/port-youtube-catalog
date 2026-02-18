@@ -4,13 +4,20 @@ from datetime import datetime
 def fetch_data():
     api_key = os.environ.get('YOUTUBE_API_KEY')
     playlist_url = os.environ.get('PLAYLIST_URL')
-    playlist_id = re.search(r"list=([^&]+)", playlist_url).group(1)
+    
+    # Extracting Playlist ID from URL
+    match = re.search(r"list=([^&]+)", playlist_url)
+    if not match:
+        print("Invalid Playlist URL")
+        return
+    playlist_id = match.group(1)
     
     entities = []
 
-    # 1. Playlist Ingestion
+    # 1. Fetch Playlist Metadata
     pl_url = f"https://www.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&id={playlist_id}&key={api_key}"
     pl_resp = requests.get(pl_url).json()
+    
     if 'items' in pl_resp and len(pl_resp['items']) > 0:
         pl = pl_resp['items'][0]
         entities.append({
@@ -25,7 +32,7 @@ def fetch_data():
             }
         })
 
-    # 2. Videos Ingestion
+    # 2. Fetch Videos from Playlist
     v_url = f"https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=50&playlistId={playlist_id}&key={api_key}"
     v_items = requests.get(v_url).json().get('items', [])
 
