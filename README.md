@@ -34,7 +34,7 @@ At Port buildiung your software catalog is comprised of two steps:
 In order to define your data model, Port provides you with no code elements called "blueprints" and "relations".
 
 
-**Blueprints** are the building blocks of your catalog. Think of them as the "classes" or "schemas" for your data. 
+**Blueprints** are the building blocks of your catalog. Think of them as the "classes" or "schemas" for your data.<br>
 For this guide, you will create two blueprints: **YouTube Playlist** and **YouTube Video**.
 
 ### Setup Blueprints
@@ -50,8 +50,9 @@ Blueprints are completely customizable, but they all follow the same basic struc
 | `properties`    | customizable data fields, used to save and display information from external data sources | See the full [properties list](https://docs.port.io/build-your-software-catalog/customize-integrations/configure-data-model/setup-blueprint/properties#supported-properties)|
 
 
+
 > [!IMPORTANT]
-> Before defining blueprint properties, decide what questions you want to answer.
+> Before defining blueprint properties, decide what questions you want to answer.<br>
 > A good data model starts from the use-case, not from the API response.
 
 In our case, we want to create a playlist and assest the "video quality" singals of its videos like readability and engagement.
@@ -79,7 +80,7 @@ These are the propeties we want to use:
 | `videoCount`    | `number`             | No       | Quick indicator of playlist size and completeness.           |
 | `lastUpdatedAt` | `string (date-time)` | No       | Shows when the data was last synced for freshness/debugging. |
 
-Blueprints describe individual entities, but real systems consist of connected components.
+Blueprints describe individual entities, but real systems consist of connected components.<br>
 A **relation** links blueprints together so the catalog reflects how the data actually behaves.
 
 In our model, a playlist contains many videos, and each video belongs to exactly one playlist.
@@ -90,10 +91,11 @@ Now that we defined the data model conceptually, we can implement it in Port.
 In Port, the blueprint configuration is defined using JSON.
 
 
-You can either configure it through the UI or paste the JSON directly in the blueprint editor.
-Go to **Builder → Blueprints → + Blueprint → Edit JSON** and paste the following configuration
+You can either configure it through the UI or paste the JSON directly in the blueprint editor.<br>
+Go to **Builder → Blueprints → + Blueprint → Edit JSON** and paste the following configuration.
 
 **YouTube Video Blueprint JSON**
+The following blueprint defines the video entity and its relation to a playlist:
 ```json
 {
   "identifier": "youtube_video",
@@ -168,4 +170,50 @@ Go to **Builder → Blueprints → + Blueprint → Edit JSON** and paste the fol
   }
 }
 ```
+
+**YouTube Playlist Blueprint JSON**
+
+The playlist blueprint represents the parent entity that groups videos together.<br>
+It serves as the aggregation point for insights such as total videos, freshness, and engagement across the collection.
+```json
+{
+  "identifier": "youtube_playlist",
+  "description": "A YouTube playlist that contains many videos.",
+  "title": "YouTube Playlist",
+  "icon": "Google",
+  "schema": {
+    "properties": {
+      "link": {
+        "type": "string",
+        "format": "url",
+        "title": "Playlist Link"
+      },
+      "videoCount": {
+        "type": "number",
+        "title": "Number of Videos"
+      },
+      "playlistId": {
+        "type": "string",
+        "title": "Playlist ID"
+      },
+      "lastUpdatedAt": {
+        "type": "string",
+        "title": "Last Update",
+        "format": "date-time"
+      }
+    },
+    "required": [
+      "link",
+      "playlistId"
+    ]
+  },
+  "mirrorProperties": {},
+  "calculationProperties": {},
+  "aggregationProperties": {},
+  "relations": {}
+}
+```
+
+Relation between  `YouTube Video` and `YouTube Playlist`as displayed in Port.
+![Relationl](assets/relations-viz.png)
 
