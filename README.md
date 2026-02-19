@@ -15,8 +15,8 @@ By the end of this guide, you will know how to:
 ## Table of contents
 
 - [Prerequisites](#prerequisites)
-- [Building your software catalog](#building-your-software-catalog)
-- [Data Ingestion (GitHub Workflow)](#data-Ingestion)
+- [Building Your Software Catalog](#building-your-software-catalog)
+- [Ingesting External Data with a GitHub Workflow](#ingesting-external-data-with-a-github-workflow)
 - [Measuring Quality with Scorecards](#measuring-quality-with-scorecards)
 - [Visualizing Insights with Dashboards](#visualizing-insights-with-dashboards)
 - [Troubleshooting](#troubleshooting)
@@ -246,16 +246,23 @@ It serves as the aggregation point for insights such as total videos, freshness,
 
 </details>
 
-## Data Ingestion (GitHub Workflow)
-We use a GitHub Actions workflow to fetch playlist data from the YouTube Data API and synchronize it with Port.<br>
-This turns your external data into living entities within your portal.
+## Ingesting External Data with a GitHub Workflow
+We use a GitHub Actions workflow to fetch playlist data from the YouTube Data API and synchronize it with Port.
+This process turns external data into structured entities in your software catalog, enabling you to search, score, and visualize it alongside your internal assets.
+
+The workflow performs three operations:
+
+Fetch playlist and video metadata from YouTube.
+Transform the response into Port entities.
+Upsert (Update or Insert) the entities into the catalog.
+The workflow is triggered manually so you can control when synchronization happens
 
 The workflow performs three operations:
 1. **Fetch** playlist and video metadata from YouTube.
 2. **Transform** the response into Port entities.
 3. **Upsert** (Update or Insert) the entities into the catalog.
 
-The workflow is triggered manually so you can control when synchronization happens.
+The workflow is triggered manually, giving you full control over when synchronization occurs.
 
 ### Step 1: Configure authentication
 GitHub requires specific permissions to write data to Port and read data from YouTube.
