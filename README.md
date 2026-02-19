@@ -213,7 +213,156 @@ It serves as the aggregation point for insights such as total videos, freshness,
   "relations": {}
 }
 ```
+<details>
+<summary>How the YouTube Video blueprint looks in Port</summary>
 
-Relation between  `YouTube Video` and `YouTube Playlist`as displayed in Port.
-![Relationl](assets/relations-viz.png)
+![Video Blueprint](assets/bp-video.png)
 
+</details>
+
+<details>
+<summary>How the YouTube Playlist blueprint looks in Port</summary>
+
+![Playlist Blueprint](assets/bp-playlist.png)
+
+</details>
+
+<details>
+<summary>How the relation between YouTube Video and YouTube Playlist looks in Port</summary>
+
+![Relation](assets/relations-viz.png)
+
+</details>
+
+## Data Ingestion (GitHub Workflow)
+We will use a GitHub Actions workflow to fetch playlist data from the YouTube Data API and synchronize it with Port.
+
+The workflow performs three operations:
+1. Fetch playlist and video metadata from YouTube
+2. Transform the response into Port entities
+3. Upsert the entities into the catalog
+
+The workflow is triggered manually so you can control when synchronization happens.
+
+### Step 1: Configure authentication
+GitHub needs permission to write entities into Port and read data from YouTube.
+
+**Add Port credentials**
+
+In Port:
+
+Log in to https://app.getport.io
+
+Open Profile → Credentials
+
+Copy:
+
+* Client ID
+* Client Secret
+
+In GitHub, go to:
+
+**Repository → Settings → Secrets and variables → Actions**
+
+Create:
+| Secret               | Description                          |
+| -------------------- | ------------------------------------ |
+| `PORT_CLIENT_ID`     | Authenticates the workflow to Port   |
+| `PORT_CLIENT_SECRET` | Used to generate a Port access token |
+
+**Add YouTube API key**
+
+Create a YouTube Data API key in Google Cloud Console and add:
+| Secret            | Description                               |
+| ----------------- | ----------------------------------------- |
+| `YOUTUBE_API_KEY` | Allows the workflow to read playlist data |
+
+
+### Step 2: Create the ingestion workflow
+Create the file:
+```bash
+.github/workflows/ingest_youtube.yml
+```
+Paste:
+```yaml
+name: Ingest YouTube playlist to Port
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    env:
+      PLAYLIST_URL: "https://www.youtube.com/playlist?list=PL5ErBr2d3QJH0kbwTQ7HSuzvBb4zIWzhy"
+      YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+      PORT_CLIENT_ID: ${{ secrets.PORT_CLIENT_ID }}
+      PORT_CLIENT_SECRET: ${{ secrets.PORT_CLIENT_SECRET }}
+      PORT_API_BASE_URL: "https://api.getport.io/v1"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install requests isodate
+          sudo apt-get install jq -y
+
+      - name: Fetch and transform YouTube data
+        id: run_script
+        run: |
+          python scripts/ingest_youtube.py
+          echo "entities=$(cat entities.json | jq -c .)" >> $GITHUB_OUTPUT
+
+      - name: Upsert entities to Port
+        uses: port-labs/port-github-action@v1
+        with:
+          clientId: ${{ secrets.PORT_CLIENT_ID }}
+          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+          operation: BULK_UPSERT
+          entities: ${{ steps.run_script.outputs.entities }}
+```
+> [!NOTE]
+> The BULK_UPSERT operation keeps the catalog synchronized.<br>
+> Existing entities are updated and new ones are created.
+
+### Step 3: Run the workflow
+
+1. Open the Actions tab in GitHub
+2. Select Ingest YouTube playlist to Port
+3. Click Run workflow
+
+If it works, it should look like this:
+![workflow success](assets/workflow-success.png)
+
+
+The workflow will:
+
+* Fetch playlist data from YouTube
+* Map it to the Port data model
+* Synchronize the catalog
+
+### Step 4: Verify ingestion in Port
+
+Open your Port catalog:
+**Catalog → YouTube Playlists**
+**Catalog → YouTube Videos**
+
+If ingestion succeeded, Port now contains structured entities populated from YouTube.
+<details>
+<summary>View playlist entity</summary>
+
+![Playlist entities](assets/catalog-playlist.png)
+</details>
+
+<details>
+<summary>View videos entities</summary>
+
+![Playlist entities](assets/catalog-videos.png)
+</details>
