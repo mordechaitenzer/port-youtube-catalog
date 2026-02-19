@@ -12,6 +12,18 @@ By the end of this guide, you will know how to:
 * **Enforce** standards and quality metrics with scorecards.
 * **Create** a clear dashboard for actionable insight
 
+## Table of contents
+
+- [Prerequisites](#prerequisites)
+- [Build your software catalog](#build-your-software-catalog)
+  - [Define the data model](#define-the-data-model)
+  - [Blueprint JSON configuration](#blueprint-json-configuration)
+- [Ingest data (GitHub workflow)](#ingest-data-github-workflow)
+- [Measure quality with scorecards](#measure-quality-with-scorecards)
+- [Visualize insights with dashboards](#visualize-insights-with-dashboards)
+- [Troubleshooting](#troubleshooting)
+
+
 ## Prerequisites
 Before getting started, ensure you have the following:
 
@@ -27,11 +39,12 @@ To keep your credentials safe, add the following as **GitHub Secrets** in your r
 * `YOUTUBE_API_KEY`
 
 ## Build your software catalog
-At Port buildiung your software catalog is comprised of two steps:
-1. **Define your data model**
-2. **Ingest data to software catalog**
+To create a software catalog in Port, follow these two steps:
 
-In order to define your data model, Port provides you with no code elements called "blueprints" and "relations".
+* **Define your data model**
+* **Ingest data into your catalog**
+
+In order to define your data model, Port provides you with no-code elements called "blueprints" and "relations".
 
 
 **Blueprints** are the building blocks of your catalog. Think of them as the "classes" or "schemas" for your data.<br>
@@ -55,13 +68,13 @@ Blueprints are completely customizable, but they all follow the same basic struc
 > Before defining blueprint properties, decide what questions you want to answer.<br>
 > A good data model starts from the use-case, not from the API response.
 
-In our case, we want to create a playlist and assest the "video quality" singals of its videos like readability and engagement.
+In our case, we want to create a playlist and assess the "video quality" singals of its videos like readability and engagement.
 These are the propeties we want to use:
 
 **YouTube Video Blueprint**
 | Property         | Type                   | Required | Why we need it                                                       |
 | ---------------  | ---------------------- | -------- | -------------------------------------------------------------------- |
-| `title`          | `string (url)`         | Yes      | Primary identifier shown in the catalog and search results.          |
+| `title`          | `string`               | Yes      | Primary identifier shown in the catalog and search results.          |
 | `titleLength`    | `number`               | No       | Enables quality rules (e.g., detect overly long titles).             | 
 | `durationSeconds`| `number`               | No       | Helps evaluate viewing experience and filter very long/short videos. |
 | `viewCount`      | `number`               | No       | Enables popularity and ranking visualizations.                       |
@@ -72,7 +85,7 @@ These are the propeties we want to use:
 **YouTube Playlist Blueprint**
 | Property         | Type                   | Required | Why we need it                                                       |
 | ---------------  | ---------------------- | -------- | -------------------------------------------------------------------- |
-| `link`           | `string (url)`         | Yes      | Direct access to the playlist from Port.                             |
+| `link`           | `url`                  | Yes      | Direct access to the playlist from Port.                             |
 | `playlistId`     | `string`               | Yes      | Stable identifier used for ingestion and upserts.                    |
 | `videoCount`     | `number`               | No       | Quick indicator of playlist size and completeness.                   |
 | `lastUpdatedAt`  | `string (date-time)`   | No       | Shows when the data was last synced for freshness/debugging.         |
@@ -249,8 +262,8 @@ GitHub requires specific permissions to write data to Port and read data from Yo
 
 **Create the required secrets**
 
-1. Login to **Port**, go to **Profile → Credentials** and copy your `Client ID` and `Client Secret`.
-2. Login to **Google Cloud Console**, create a YouTube Data API key.
+1. Log in to **Port**, go to **Profile → Credentials** and copy your `Client ID` and `Client Secret`.
+2. Log in to **Google Cloud Console**, create a YouTube Data API key.
 3. In your GitHub repository, go to **Settings → Secrets and variables → Actions → New repository secret**
 4. Add the following secrets:
    
@@ -438,7 +451,7 @@ After creating the scorecard, you configure its rules inside Scorecard Rules.
   
 **Viewing Scorecard Results in the Catalog**
 
-After applying the scorecard, each video in the catalog displays its assigned maturity tier in the The Playlist Pulse column.
+After applying the scorecard, each video in the catalog displays its assigned maturity tier in the the Playlist Pulse column.
 
 If a video does not meet any rule, it is classified as **Basic**.<br>
 You can also see the percentage of passed rules, indicating how closely each video aligns with the defined standards.
@@ -455,6 +468,7 @@ You can also see the percentage of passed rules, indicating how closely each vid
 After ingesting and evaluating the data, you can use Port dashboards to turn raw entities into actionable insights.
 
 Dashboards aggregate catalog data and help you quickly understand trends, quality distribution, and standout entities without writing queries.
+In real systems, teams use similar dashboards to monitor service quality, deployment health, SLA compliance, or adoption metrics.
 
 Below is the dashboard we created for the playlist:
 ![Dashboard](assets/dashboard-main.png)
@@ -467,10 +481,47 @@ This dashboard answers three practical questions:
 
 ### Pie Chart: Video Quality Distribution
 This widget shows how videos are distributed across the scorecard tiers: Basic, Bronze, Silver, and Gold.
-It uses the The Playlist Pulse scorecard level as the grouping property.
+It uses the the Playlist Pulse scorecard level as the grouping property.
 This helps you quickly assess overall catalog health.
 When you hover over a segment of the chart, Port displays the exact percentage of videos in that tier, helping you quantify the distribution without manual calculation.
+![Pie Percentage Chart](assets/viz-percentagepie.png)
 
-![Pie Chart](assets/viz-pie.png)
 
+### Table Chart: Top Performing Video
+This widget highlights the most popular videos in the playlist.
+The table shows engagement metrics like: views, likes, and comments.
+We configured the table to:
 
+* **Filter**: show only the top 10 videos with the most views
+* **Sort**: order by `viewCount` descending
+
+This allows you to instantly identify your highest-impact content.
+![Table Chart](assets/viz-table.png)
+
+### Number Chart: Most Commented Video
+Instead of manually inspecting dozens of entities, you now have a live operational view of your catalog.
+We use the MAX aggregation on the `commentCount` property to surface the single most discussed video and its exact number of comments.
+![Number Chart](assets/viz-number.png)
+
+## Troubleshooting
+If the workflow fails, check the following:
+<details>
+<summary>Authentication errors</summary>
+  
+* Ensure  `PORT_CLIENT_ID `, `PORT_CLIENT_SECRET`, and `YOUTUBE_API_KEY` are correctly configured in GitHub Secrets.
+* Verify there are no extra spaces in secret values.
+
+</details>
+
+<details>
+<summary>Empty catalog after run</summary>
+  
+* Confirm the `PLAYLIST_URL` contains a valid playlistId.
+* Check that your YouTube API key has access to the YouTube Data API.
+
+</details>
+
+For detailed API reference, see:
+
+* [Port API documentation](https://docs.port.io/)
+* [YouTube Data API documentation](https://developers.google.com/youtube/v3/docs)
