@@ -440,12 +440,37 @@ After creating the scorecard, you configure its rules inside Scorecard Rules.
 
 After applying the scorecard, each video in the catalog displays its assigned maturity tier in the The Playlist Pulse column.
 
-If a video does not meet any rule, it is classified as Basic.
+If a video does not meet any rule, it is classified as **Basic**.<br>
 You can also see the percentage of passed rules, indicating how closely each video aligns with the defined standards.
 
-💡 Tip: The percentage column helps you quickly identify borderline cases — videos that almost meet the next maturity tier.
+> [!TIP]
+> The percentage column helps you quickly identify borderline cases.<br>
+> You can spot videos that almost meet the next maturity tier.
 
 
+![Scorecard Catalog](assets/scorecard-catalog.png)
 
+## Visualizing Insights with Dashboards
+
+After ingesting and evaluating the data, you can use Port dashboards to turn raw entities into actionable insights.
+
+Dashboards aggregate catalog data and help you quickly understand trends, quality distribution, and standout entities without writing queries.
+
+Below is the dashboard we created for the playlist:
+![Dashboard](assets/dashboard-main.png)
+
+This dashboard answers three practical questions:
+
+* How many videos meet our quality standards?
+* Which videos perform best?
+* What content gets the most engagement?
+
+### Pie Chart: Video Quality Distribution
+This widget shows how videos are distributed across the scorecard tiers: Basic, Bronze, Silver, and Gold.
+It uses the The Playlist Pulse scorecard level as the grouping property.
+This helps you quickly assess overall catalog health.
+When you hover over a segment of the chart, Port displays the exact percentage of videos in that tier, helping you quantify the distribution without manual calculation.
+
+![Pie Chart](assets/viz-pie.png)
 
 
