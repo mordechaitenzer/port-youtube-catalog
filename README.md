@@ -16,8 +16,6 @@ By the end of this guide, you will know how to:
 
 - [Prerequisites](#prerequisites)
 - [Build your software catalog](#build-your-software-catalog)
-  - [Define the data model](#define-the-data-model)
-  - [Blueprint JSON configuration](#blueprint-json-configuration)
 - [Ingest data (GitHub workflow)](#ingest-data-github-workflow)
 - [Measure quality with scorecards](#measure-quality-with-scorecards)
 - [Visualize insights with dashboards](#visualize-insights-with-dashboards)
@@ -29,7 +27,7 @@ Before getting started, ensure you have the following:
 
 * **Port Account**: access to your Port instance.
 * **GitHub Repository**: used to run the ingestion workflow via GitHub Actions.
-* **Youtube Playlist**: we will ingest this playlist: https://www.youtube.com/playlist?list=PL5ErBr2d3QJH0kbwTQ7HSuzvBb4zIWzhy<br>The workflow only requires the playlist’s unique identifier (`playlistId`), so you can replace it with any playlist later.
+* **Youtube Playlist**: we will ingest this playlist: https://www.youtube.com/playlist?list=PL5ErBr2d3QJH0kbwTQ7HSuzvBb4zIWzhy.<br>The workflow only requires the playlist’s unique identifier (`playlistId`), so you can replace it with any playlist later.
 * **YouTube API Key**: created in the [Google Cloud Console](https://cloud.google.com/).
 
 ### Secure Storage
@@ -69,6 +67,7 @@ Blueprints are completely customizable, but they all follow the same basic struc
 > A good data model starts from the use-case, not from the API response.
 
 In our case, we want to create a playlist and assess the "video quality" singals of its videos like readability and engagement.
+
 These are the propeties we want to use:
 
 **YouTube Video Blueprint**
@@ -107,6 +106,7 @@ You can either configure it through the UI or paste the JSON directly in the blu
 Go to **Builder → Blueprints → + Blueprint → Edit JSON** and paste the following configuration.
 
 **YouTube Video Blueprint JSON**
+
 The following blueprint defines the video entity and its relation to a playlist:
 ```json
 {
@@ -280,7 +280,7 @@ Create a new file at:
 ```
 Paste the following configuration.
 
-**Important**: Update the `PLAYLIST_URL` in the env section below with the link to the playlist you wish to track.
+**Important**: Update the `PLAYLIST_URL` in the `env` section below with the link to the playlist you wish to track.
 
 ```yaml
 name: Ingest YouTube playlist to Port
