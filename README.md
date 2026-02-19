@@ -16,7 +16,7 @@ By the end of this guide, you will know how to:
 
 - [Prerequisites](#prerequisites)
 - [Build your software catalog](#build-your-software-catalog)
-- [Ingest data (GitHub workflow)](#ingest-data-github-workflow)
+- [Ingest data (GitHub workflow)](#ihttps://github.com/mordechaitenzer/port-youtube-catalog/blob/main/README.md#data-ingestion-github-workflowngest-data-github-workflow)
 - [Measure quality with scorecards](#measure-quality-with-scorecards)
 - [Visualize insights with dashboards](#visualize-insights-with-dashboards)
 - [Troubleshooting](#troubleshooting)
