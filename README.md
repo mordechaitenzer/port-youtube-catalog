@@ -59,26 +59,25 @@ In our case, we want to create a playlist and assest the "video quality" singals
 These are the propeties we want to use:
 
 **YouTube Video Blueprint**
-
-| Property          | Type                 | Required | Why we need it                                                       |
-| ----------------- | -------------------- | -------- | -------------------------------------------------------------------- |
-| `link`            | `string (url)`       | Yes      | Allows opening the video directly from Port.                         |
-| `title`           | `string`             | Yes      | Primary identifier shown in the catalog and search results.          |
-| `titleLength`     | `number`             | No       | Enables quality rules (e.g., detect overly long titles).             |
-| `durationSeconds` | `number`             | No       | Helps evaluate viewing experience and filter very long/short videos. |
-| `publishedAt`     | `string (date-time)` | No       | Supports freshness checks and publishing cadence insights.           |
-| `viewCount`       | `number`             | No       | Enables popularity and ranking visualizations.                       |
-| `likeCount`       | `number`             | No       | Measures positive engagement quality.                                |
-| `commentCount`    | `number`             | No       | Indicates interaction level and audience engagement.                 |
+| Property         | Type                   | Required | Why we need it                                                       |
+| ---------------  | ---------------------- | -------- | -------------------------------------------------------------------- |
+| `title`          | `string (url)`         | Yes      | Primary identifier shown in the catalog and search results.          |
+| `titleLength`    | `number`               | No       | Enables quality rules (e.g., detect overly long titles).             | 
+| `durationSeconds`| `number`               | No       | Helps evaluate viewing experience and filter very long/short videos. |
+| `viewCount`      | `number`               | No       | Enables popularity and ranking visualizations.                       |
+| `likeCount`      | `number`               | No       | Measures positive engagement quality.                                |
+| `commentCount`   | `number`               | No       | 	Indicates interaction level and audience engagement.                |
 
 
 **YouTube Playlist Blueprint**
-| Property        | Type                   | Required | Why we need it                                                       |
-| --------------- | ---------------------- | -------- | -------------------------------------------------------------------- |
-| `link`          | `string (url)`         | Yes      | Direct access to the playlist from Port.                             |
-| `playlistId`    | `string`               | Yes      | Stable identifier used for ingestion and upserts.                    |
-| `videoCount`    | `number`               | No       | Quick indicator of playlist size and completeness.                   |
-| `lastUpdatedAt` | `string (date-time)`   | No       | Shows when the data was last synced for freshness/debugging.         |
+| Property         | Type                   | Required | Why we need it                                                       |
+| ---------------  | ---------------------- | -------- | -------------------------------------------------------------------- |
+| `link`           | `string (url)`         | Yes      | Direct access to the playlist from Port.                             |
+| `playlistId`     | `string`               | Yes      | Stable identifier used for ingestion and upserts.                    |
+| `videoCount`     | `number`               | No       | Quick indicator of playlist size and completeness.                   |
+| `lastUpdatedAt`  | `string (date-time)`   | No       | Shows when the data was last synced for freshness/debugging.         |
+
+
 
 Blueprints describe individual entities, but real systems consist of connected components.<br>
 A **relation** links blueprints together so the catalog reflects how the data actually behaves.
@@ -248,32 +247,28 @@ The workflow is triggered manually so you can control when synchronization happe
 ### Step 1: Configure authentication
 GitHub requires specific permissions to write data to Port and read data from YouTube.
 
-**Configure Port Credentials**
-1. In Port, go to your **Profile → Credentials**.
-2. Copy your `Client ID` and `Client Secret`.
-3. In your GitHub Repository, navigate to **Settings → Secrets and variables → Actions**.
-4. Createthe following secrets:
+**Create the required secrets**
+
+1. Login to **Port**, go to **Profile → Credentials** and copy your `Client ID` and `Client Secret`.
+2. Login to **Google Cloud Console**, create a YouTube Data API key.
+3. In your GitHub repository, go to **Settings → Secrets and variables → Actions → New repository secret**
+4. Add the following secrets:
    
-| Secret               | Description                                       |
-| ---------------------| --------------------------------------------------|
-| `PORT_CLIENT_ID`     | Authenticates the workflow to Port                |
-| `PORT_CLIENT_SECRET` | Used to generate a Port access token              |
-
-**Configure YouTube API Key**
-
-Create a YouTube Data API key in [Google Cloud Console](https://cloud.google.com/) and add it to GitHub:
-
-| Secret               | Description                                         |
-| ---------------------| ----------------------------------------------------|
-| `YOUTUBE_API_KEY`    | Grants the workflow access to the YouTube Data API. |
-
+|Source                | Secret Key          | Description                                       |
+| ---------------------| --------------------|---------------------------------------------------|
+| [Port](https://www.port.io/)               | `PORT_CLIENT_ID`    | Authenticates the workflow to Port                |
+| [Port](https://www.port.io/)               | `PORT_CLIENT_SECRET` | Used to generate a Port access token              |
+| [Google Cloud Console](https://cloud.google.com/)        | `YOUTUBE_API_KEY`   | Grants the workflow access to the YouTube Data API|
 
 ### Step 2: Create the ingestion workflow
-Create the file:
+Create a new file at:
 ```bash
 .github/workflows/ingest_youtube.yml
 ```
-Paste:
+Paste the following configuration.
+
+**Important**: Update the `PLAYLIST_URL` in the env section below with the link to the playlist you wish to track.
+
 ```yaml
 name: Ingest YouTube playlist to Port
 
@@ -318,31 +313,24 @@ jobs:
           entities: ${{ steps.run_script.outputs.entities }}
 ```
 > [!NOTE]
-> The BULK_UPSERT operation keeps the catalog synchronized.<br>
+> The `BULK_UPSERT` operation keeps the catalog synchronized.<br>
 > Existing entities are updated and new ones are created.
 
 ### Step 3: Run the workflow
 
-1. Open the Actions tab in GitHub
-2. Select Ingest YouTube playlist to Port
-3. Click Run workflow
+1. Navigate to the **Actions** tab in your GitHub repository.
+2. Select **Ingest YouTube playlist to Port** from the left sidebar.
+3. Click **Run workflow → Run workflow**.
 
 If it works, it should look like this:
 ![workflow success](assets/workflow-success.png)
 
-
-The workflow will:
-
-* Fetch playlist data from YouTube
-* Map it to the Port data model
-* Synchronize the catalog
-
 ### Step 4: Verify ingestion in Port
+Once the workflow completes, verify that the data has been mapped correctly:
 
-Open your Port catalog:
-**Catalog → YouTube Playlists**
-**Catalog → YouTube Videos**
-
+1. Open your Port Catalog.
+2. Check the **YouTube Playlists** and **YouTube Videos blueprints**.
+   
 If ingestion succeeded, Port now contains structured entities populated from YouTube.
 <details>
 <summary>View playlist entity</summary>
@@ -355,3 +343,4 @@ If ingestion succeeded, Port now contains structured entities populated from You
 
 ![Playlist entities](assets/catalog-videos.png)
 </details>
+
