@@ -336,7 +336,8 @@ jobs:
 3. Click **Run workflow → Run workflow**.
 
 If it works, it should look like this:
-![workflow success](assets/workflow-success.png)
+
+![workflow success](assets/github-success.png)
 
 ### Step 4: Verify ingestion in Port
 Once the workflow completes, verify that the data has been mapped correctly:
