@@ -15,10 +15,10 @@ By the end of this guide, you will know how to:
 ## Table of contents
 
 - [Prerequisites](#prerequisites)
-- [Building your software catalog](#build-your-software-catalog)
-- [Data Ingestion (GitHub Workflow)](#)
-- [Measuring Quality with Scorecards](#measure-quality-with-scorecards)
-- [Visualizing Insights with Dashboards](#visualize-insights-with-dashboards)
+- [Building your software catalog](#building-your-software-catalog)
+- [Data Ingestion (GitHub Workflow)](#data-Ingestion)
+- [Measuring Quality with Scorecards](#measuring-quality-with-scorecards)
+- [Visualizing Insights with Dashboards](#visualizing-insights-with-dashboards)
 - [Troubleshooting](#troubleshooting)
 
 
