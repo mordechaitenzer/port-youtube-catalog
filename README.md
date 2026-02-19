@@ -40,14 +40,14 @@ For this guide, you will create two blueprints: **YouTube Playlist** and **YouTu
 ### Setup Blueprints
 
 Blueprints are completely customizable, but they all follow the same basic structure.
-| Field           | Description                                                                               | Notes                                        |
-|-----------------|-------------------------------------------------------------------------------------------|----------------------------------------------|
-| `identifier`    | Used for API calls, programmatic access, and distinguishing between blueprints            | Required (max 100 characters)                |
-| `title`         | Human-readable name for the blueprint                                                     | Required (max 100 characters)                |
-| `description`   | Visible as a tooltip when hovering over the info icon in the UI                           |                                              |
-| `icon`          | Icon for the blueprint and its entities                                                   | You can only use icons from a predefined list|
-| `schema`        | Object containing `properties` and `required` fields                                      | Required                                     |
-| `properties`    | customizable data fields, used to save and display information from external data sources | See the full [properties list](https://docs.port.io/build-your-software-catalog/customize-integrations/configure-data-model/setup-blueprint/properties#supported-properties)|
+| Field           | Description                                                                              | Notes                                        |
+|-----------------|------------------------------------------------------------------------------------------|----------------------------------------------|
+| `identifier`    | Used for API calls, programmatic access, and distinguishing between blueprints           | Required (max 100 characters)                |
+| `title`         | Human-readable name for the blueprint                                                    | Required (max 100 characters)                |
+| `description`   | Visible as a tooltip when hovering over the info icon in the UI                          |                                              |
+| `icon`          | Icon for the blueprint and its entities                                                  | You can only use icons from a predefined list|
+| `schema`        | Object containing `properties` and `required` fields                                     | Required                                     |
+| `properties`    | customizable data fields, used to save and display information from external data sources| See the full [properties list](https://docs.port.io/build-your-software-catalog/customize-integrations/configure-data-model/setup-blueprint/properties#supported-properties)|
 
 
 
@@ -73,12 +73,12 @@ These are the propeties we want to use:
 
 
 **YouTube Playlist Blueprint**
-| Property        | Type                 | Required | Why we need it                                               |
-| --------------- | -------------------- | -------- | ------------------------------------------------------------ |
-| `link`          | `string (url)`       | Yes      | Direct access to the playlist from Port.                     |
-| `playlistId`    | `string`             | Yes      | Stable identifier used for ingestion and upserts.            |
-| `videoCount`    | `number`             | No       | Quick indicator of playlist size and completeness.           |
-| `lastUpdatedAt` | `string (date-time)` | No       | Shows when the data was last synced for freshness/debugging. |
+| Property        | Type                   | Required | Why we need it                                                       |
+| --------------- | ---------------------- | -------- | -------------------------------------------------------------------- |
+| `link`          | `string (url)`         | Yes      | Direct access to the playlist from Port.                             |
+| `playlistId`    | `string`               | Yes      | Stable identifier used for ingestion and upserts.                    |
+| `videoCount`    | `number`               | No       | Quick indicator of playlist size and completeness.                   |
+| `lastUpdatedAt` | `string (date-time)`   | No       | Shows when the data was last synced for freshness/debugging.         |
 
 Blueprints describe individual entities, but real systems consist of connected components.<br>
 A **relation** links blueprints together so the catalog reflects how the data actually behaves.
@@ -235,47 +235,37 @@ It serves as the aggregation point for insights such as total videos, freshness,
 </details>
 
 ## Data Ingestion (GitHub Workflow)
-We will use a GitHub Actions workflow to fetch playlist data from the YouTube Data API and synchronize it with Port.
+We use a GitHub Actions workflow to fetch playlist data from the YouTube Data API and synchronize it with Port.<br>
+This turns your external data into living entities within your portal.
 
 The workflow performs three operations:
-1. Fetch playlist and video metadata from YouTube
-2. Transform the response into Port entities
-3. Upsert the entities into the catalog
+1. **Fetch** playlist and video metadata from YouTube.
+2. **Transform** the response into Port entities.
+3. **Upsert** (Update or Insert) the entities into the catalog.
 
 The workflow is triggered manually so you can control when synchronization happens.
 
 ### Step 1: Configure authentication
-GitHub needs permission to write entities into Port and read data from YouTube.
+GitHub requires specific permissions to write data to Port and read data from YouTube.
 
-**Add Port credentials**
+**Configure Port Credentials**
+1. In Port, go to your **Profile → Credentials**.
+2. Copy your `Client ID` and `Client Secret`.
+3. In your GitHub Repository, navigate to **Settings → Secrets and variables → Actions**.
+4. Createthe following secrets:
+   
+| Secret               | Description                                       |
+| ---------------------| --------------------------------------------------|
+| `PORT_CLIENT_ID`     | Authenticates the workflow to Port                |
+| `PORT_CLIENT_SECRET` | Used to generate a Port access token              |
 
-In Port:
+**Configure YouTube API Key**
 
-Log in to https://app.getport.io
+Create a YouTube Data API key in [Google Cloud Console](https://cloud.google.com/) and add it to GitHub:
 
-Open Profile → Credentials
-
-Copy:
-
-* Client ID
-* Client Secret
-
-In GitHub, go to:
-
-**Repository → Settings → Secrets and variables → Actions**
-
-Create:
-| Secret               | Description                          |
-| -------------------- | ------------------------------------ |
-| `PORT_CLIENT_ID`     | Authenticates the workflow to Port   |
-| `PORT_CLIENT_SECRET` | Used to generate a Port access token |
-
-**Add YouTube API key**
-
-Create a YouTube Data API key in Google Cloud Console and add:
-| Secret            | Description                               |
-| ----------------- | ----------------------------------------- |
-| `YOUTUBE_API_KEY` | Allows the workflow to read playlist data |
+| Secret               | Description                                         |
+| ---------------------| ----------------------------------------------------|
+| `YOUTUBE_API_KEY`    | Grants the workflow access to the YouTube Data API. |
 
 
 ### Step 2: Create the ingestion workflow
@@ -312,7 +302,6 @@ jobs:
       - name: Install dependencies
         run: |
           pip install requests isodate
-          sudo apt-get install jq -y
 
       - name: Fetch and transform YouTube data
         id: run_script
