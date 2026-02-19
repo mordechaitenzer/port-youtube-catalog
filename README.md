@@ -16,7 +16,7 @@ By the end of this guide, you will know how to:
 
 - [Prerequisites](#prerequisites)
 - [Build your software catalog](#build-your-software-catalog)
-- [Ingest data (GitHub workflow)](#ihttps://github.com/mordechaitenzer/port-youtube-catalog/blob/main/README.md#data-ingestion-github-workflowngest-data-github-workflow)
+- [Ingest data (GitHub workflow)](#)
 - [Measure quality with scorecards](#measure-quality-with-scorecards)
 - [Visualize insights with dashboards](#visualize-insights-with-dashboards)
 - [Troubleshooting](#troubleshooting)
@@ -36,7 +36,7 @@ To keep your credentials safe, add the following as **GitHub Secrets** in your r
 * `PORT_CLIENT_SECRET`
 * `YOUTUBE_API_KEY`
 
-## Build your software catalog
+## Building Your Software Catalog
 To create a software catalog in Port, follow these two steps:
 
 * **Define your data model**
@@ -358,7 +358,7 @@ If ingestion succeeded, Port now contains structured entities populated from You
 ![Playlist entities](assets/catalog-videos.png)
 </details>
 
-## Measuring Video Quality with a Scorecard
+## Measuring Quality with Scorecards
 You can use Scorecards in Port to define measurable standards and continuously evaluate your entities against them.
 For example, you can enforce operational standards such as deployment best practices, documentation completeness, service ownership, or SLA compliance.
 
