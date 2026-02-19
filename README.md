@@ -344,3 +344,108 @@ If ingestion succeeded, Port now contains structured entities populated from You
 ![Playlist entities](assets/catalog-videos.png)
 </details>
 
+## Measuring Video Quality with a Scorecard
+You can use Scorecards in Port to define measurable standards and continuously evaluate your entities against them.
+For example, you can enforce operational standards such as deployment best practices, documentation completeness, service ownership, or SLA compliance.
+
+In this guide, we create a scorecard called “The Playlist Pulse” to evaluate video quality and audience reach in our catalog.
+
+**Playlist Pulse Maturity Model**
+| Level  | Rule Name          | Criteria                                             | Goal                                           |
+| ------ | ------------------ | ---------------------------------------------------- | ---------------------------------------------- |
+| Bronze | Fresh and Concise  | Published in the last 10 years AND title ≤ 120 chars | Ensures content is recent and scannable        |
+| Silver | Optimal Experience | Duration ≤ 360 seconds (under 6 minutes)             | Targets the “sweet spot” for viewer retention  |
+| Gold   | Top Audience Picks | Views > 1M AND Likes ≥ 20K                           | Identifies high-impact, widely adopted content |
+
+**Define the Scorecard Rules**
+
+After creating the scorecard, you configure its rules inside Scorecard Rules.
+
+![Scorecard Rules](assets/scorecard-rules.png)
+
+
+**Scorecard JSON Definition**
+```json
+{
+  "identifier": "the_playlist_pulse",
+  "title": "The Playlist Pulse",
+  "rules": [
+    {
+      "identifier": "fresh_and_concise",
+      "level": "Bronze",
+      "title": "Fresh and Concise",
+      "description": "Videos from the last 10 years with concise titles.",
+      "query": {
+        "combinator": "and",
+        "conditions": [
+          {
+            "property": "publishedAt",
+            "operator": "between",
+            "value": {
+              "from": "2016-01-01T00:00:00.000Z",
+              "to": "2026-12-31T23:59:59.000Z"
+            }
+          },
+          {
+            "property": "titleLength",
+            "operator": "<=",
+            "value": 120
+          }
+        ]
+      }
+    },
+    {
+      "identifier": "optimal_experience",
+      "level": "Silver",
+      "title": "Optimal Experience",
+      "description": "Standard video length (under 6 minutes).",
+      "query": {
+        "combinator": "and",
+        "conditions": [
+          {
+            "property": "durationSeconds",
+            "operator": "<=",
+            "value": 360
+          }
+        ]
+      }
+    },
+    {
+      "identifier": "top_audience_picks",
+      "level": "Gold",
+      "title": "Top Audience Picks",
+      "description": "Mega-hits with massive reach (1M+ views, 20K+ Likes).",
+      "query": {
+        "combinator": "and",
+        "conditions": [
+          {
+            "property": "viewCount",
+            "operator": ">",
+            "value": 1000000
+          },
+          {
+            "property": "likeCount",
+            "operator": ">=",
+            "value": 20000
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+  
+**Viewing Scorecard Results in the Catalog**
+
+After applying the scorecard, each video in the catalog displays its assigned maturity tier in the The Playlist Pulse column.
+
+If a video does not meet any rule, it is classified as Basic.
+You can also see the percentage of passed rules, indicating how closely each video aligns with the defined standards.
+
+💡 Tip: The percentage column helps you quickly identify borderline cases — videos that almost meet the next maturity tier.
+
+
+
+
+
