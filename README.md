@@ -473,10 +473,10 @@ Open: **Catalog → YouTube Videos**
 
 Each video now displays:
 
-* Its assigned maturity tier (Basic / Bronze / Silver / Gold)
-* The percentage of passed rules
+* Its assigned maturity tier (Basic / Bronze / Silver / Gold).
+* The percentage of passed rules.
 
-If a video does not meet any rule, it is classified as **Basic**.<br>
+**Basic** is the default starting point; if a video doesn't meet any rules, it will remain classified as **Basic**.<br>
 You can also see the percentage of passed rules, indicating how closely each video aligns with the defined standards.
 
 > [!TIP]
@@ -519,11 +519,10 @@ This dashboard answers three practical questions:
 1. Click **Add Widget**.
 2. Select **Pie Chart**.
 3. Set the blueprint to `YouTube Video`.
-4. Choose grouping by the scorecard level (The Playlist Pulse).
+4. Choose grouping by the scorecard level (`The Playlist Pulse`).
 5. Save the widget.
    
 This widget shows how videos are distributed across the scorecard tiers: Basic, Bronze, Silver, and Gold.
-It uses the the Playlist Pulse scorecard level as the grouping property.
 When you hover over a segment of the chart, Port displays the exact percentage of videos in that tier, helping you quantify the distribution instantly.
 
 ![Pie Percentage Chart](assets/viz-percentagepie.png)
@@ -534,15 +533,13 @@ When you hover over a segment of the chart, Port displays the exact percentage o
 1. Click **Add Widget**.
 2. Select **Table Chart**.
 3. Select the `YouTube Video` blueprint.
-4. In Port’s Table widget, properties are included by default, and you remove the ones you don’t need.
-
-    We kept these properties: `title`,`viewCount`,`likeCount`,`commentCount`.
+4. In Port’s Table widget, all properties are included by default. Simply remove the ones you don’t need.<br>
+   For this view, keep: `title`,`viewCount`,`likeCount`,`commentCount`.
 6. Apply a **Sort**: `viewCount` → Descending.
 7. Apply a **Filter**: show only the top 10 videos with the most views.
 
 This widget highlights your highest-impact videos based on audience engagement.
-
-Using both sorting and limiting ensures you focus on the most relevant entities.
+Using both sorting and filtter ensures you focus on the most relevant entities.
 
 ![Table Chart](assets/viz-table.png)
 
@@ -550,12 +547,12 @@ Using both sorting and limiting ensures you focus on the most relevant entities.
 **How to configure**
 1. Click **Add Widget**.
 2. Select **Number Chart**.
-3. Select the `YouTube Video` blueprint.
-4. Choose the property (e.g.,`commentCount`).
+3. Choose the `YouTube Video` blueprint.
+4. Select the property you want to track (e.g., `commentCount`).
 5. Apply the **MAX aggregation** function.
    
 This widget surfaces the single highest engagement value across all videos.
-Instead of manually inspecting dozens of entities, you now have a live operational metric.
+Instead of manually inspecting dozens of entities, you now have a live operational metric that updates automatically.
 
 ![Number Chart](assets/viz-number.png)
 
