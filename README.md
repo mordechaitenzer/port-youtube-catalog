@@ -251,13 +251,6 @@ We use a GitHub Actions workflow to fetch playlist data from the YouTube Data AP
 This process turns external data into structured entities in your software catalog, enabling you to search, score, and visualize it alongside your internal assets.
 
 The workflow performs three operations:
-
-Fetch playlist and video metadata from YouTube.
-Transform the response into Port entities.
-Upsert (Update or Insert) the entities into the catalog.
-The workflow is triggered manually so you can control when synchronization happens
-
-The workflow performs three operations:
 1. **Fetch** playlist and video metadata from YouTube.
 2. **Transform** the response into Port entities.
 3. **Upsert** (Update or Insert) the entities into the catalog.
@@ -366,10 +359,12 @@ If ingestion succeeded, Port now contains structured entities populated from You
 </details>
 
 ## Measuring Quality with Scorecards
-You can use Scorecards in Port to define measurable standards and continuously evaluate your entities against them.
+After ingesting playlist and video data into Port, you can now evaluate that data using a Scorecard.
+
+You can use Scorecards in Port to define measurable standards and continuously evaluate your entities against them. <br>
 For example, you can enforce operational standards such as deployment best practices, documentation completeness, service ownership, or SLA compliance.
 
-In this guide, we create a scorecard called “The Playlist Pulse” to evaluate video quality and audience reach in our catalog.
+In this guide, we create a scorecard called **“The Playlist Pulse”** to evaluate video quality and audience reach in our catalog.
 
 **Playlist Pulse Maturity Model**
 | Level  | Rule Name          | Criteria                                             | Goal                                           |
@@ -378,9 +373,22 @@ In this guide, we create a scorecard called “The Playlist Pulse” to evaluate
 | Silver | Optimal Experience | Duration ≤ 360 seconds (under 6 minutes)             | Targets the “sweet spot” for viewer retention  |
 | Gold   | Top Audience Picks | Views > 1M AND Likes ≥ 20K                           | Identifies high-impact, widely adopted content |
 
+**Create the Scorecard in Port**
+
+1. Log in to **Port**.
+2. Navigate to **Builder → Scorecards**.
+3. Click **+ Scorecard**.
+4. Choose the target blueprint:`YouTube Video`.
+5. Name the scorecard (e.g., The Playlist Pulse).
+6. Add rules according to the maturity model above.
+7. Save the scorecard.
+
+You are now evaluating the actual video entities stored in your catalog.
+
 **Define the Scorecard Rules**
 
 After creating the scorecard, you configure its rules inside Scorecard Rules.
+We chose to define the Bronze, Silver, and Gold rules using property-based conditions.
 
 ![Scorecard Rules](assets/scorecard-rules.png)
 
@@ -459,14 +467,21 @@ After creating the scorecard, you configure its rules inside Scorecard Rules.
   
 **Viewing Scorecard Results in the Catalog**
 
-After applying the scorecard, each video in the catalog displays its assigned maturity tier in the the Playlist Pulse column.
+Once saved, the scorecard is automatically applied to all `YouTube Video` entities.
+
+Open: **Catalog → YouTube Videos**
+
+Each video now displays:
+
+* Its assigned maturity tier (Basic / Bronze / Silver / Gold)
+* The percentage of passed rules
 
 If a video does not meet any rule, it is classified as **Basic**.<br>
 You can also see the percentage of passed rules, indicating how closely each video aligns with the defined standards.
 
 > [!TIP]
 > The percentage column helps you quickly identify borderline cases.<br>
-> You can spot videos that almost meet the next maturity tier.
+> You can spot videos that almost qualify for the next tier.
 
 
 ![Scorecard Catalog](assets/scorecard-catalog.png)
@@ -476,7 +491,17 @@ You can also see the percentage of passed rules, indicating how closely each vid
 After ingesting and evaluating the data, you can use Port dashboards to turn raw entities into actionable insights.
 
 Dashboards aggregate catalog data and help you quickly understand trends, quality distribution, and standout entities without writing queries.
-In real systems, teams use similar dashboards to monitor service quality, deployment health, SLA compliance, or adoption metrics.
+You can use dashboards to monitor service quality, deployment health, SLA compliance, ownership coverage, or adoption metrics across your organization.
+
+**Create a Dashboard in Port**
+
+1. Log in to **Port**.
+2. Navigate to **Insights → Dashboards**.
+3. Click **+ Dashboard**.
+4. Name the dashboard (e.g., YouTube Playlist Overview).
+5. Click **Add Widget** to begin configuring visualizations.
+
+Once saved, you can access the dashboard anytime from the **Insights** section.
 
 Below is the dashboard we created for the playlist:
 ![Dashboard](assets/dashboard-main.png)
@@ -488,27 +513,50 @@ This dashboard answers three practical questions:
 * What content gets the most engagement?
 
 ### Pie Chart: Video Quality Distribution
+
+**How to configure**
+
+1. Click **Add Widget**.
+2. Select **Pie Chart**.
+3. Set the blueprint to `YouTube Video`.
+4. Choose grouping by the scorecard level (The Playlist Pulse).
+5. Save the widget.
+   
 This widget shows how videos are distributed across the scorecard tiers: Basic, Bronze, Silver, and Gold.
 It uses the the Playlist Pulse scorecard level as the grouping property.
-This helps you quickly assess overall catalog health.
-When you hover over a segment of the chart, Port displays the exact percentage of videos in that tier, helping you quantify the distribution without manual calculation.
+When you hover over a segment of the chart, Port displays the exact percentage of videos in that tier, helping you quantify the distribution instantly.
+
 ![Pie Percentage Chart](assets/viz-percentagepie.png)
 
 
 ### Table Chart: Top Performing Video
-This widget highlights the most popular videos in the playlist.
-The table shows engagement metrics like: views, likes, and comments.
-We configured the table to:
+**How to configure**
+1. Click **Add Widget**.
+2. Select **Table Chart**.
+3. Select the `YouTube Video` blueprint.
+4. In Port’s Table widget, properties are included by default, and you remove the ones you don’t need.
 
-* **Filter**: show only the top 10 videos with the most views
-* **Sort**: order by `viewCount` descending
+    We kept these properties: `title`,`viewCount`,`likeCount`,`commentCount`.
+6. Apply a **Sort**: `viewCount` → Descending.
+7. Apply a **Filter**: show only the top 10 videos with the most views.
 
-This allows you to instantly identify your highest-impact content.
+This widget highlights your highest-impact videos based on audience engagement.
+
+Using both sorting and limiting ensures you focus on the most relevant entities.
+
 ![Table Chart](assets/viz-table.png)
 
 ### Number Chart: Most Commented Video
-Instead of manually inspecting dozens of entities, you now have a live operational view of your catalog.
-We use the MAX aggregation on the `commentCount` property to surface the single most discussed video and its exact number of comments.
+**How to configure**
+1. Click **Add Widget**.
+2. Select **Number Chart**.
+3. Select the `YouTube Video` blueprint.
+4. Choose the property (e.g.,`commentCount`).
+5. Apply the **MAX aggregation** function.
+   
+This widget surfaces the single highest engagement value across all videos.
+Instead of manually inspecting dozens of entities, you now have a live operational metric.
+
 ![Number Chart](assets/viz-number.png)
 
 ## Troubleshooting
