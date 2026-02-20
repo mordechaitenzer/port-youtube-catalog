@@ -27,7 +27,7 @@ Before getting started, ensure you have the following:
 
 * **Port Account**: access to your Port instance.
 * **GitHub Repository**: used to run the ingestion workflow via GitHub Actions.
-* **Youtube Playlist**: we will ingest this playlist: https://www.youtube.com/playlist?list=PL5ErBr2d3QJH0kbwTQ7HSuzvBb4zIWzhy.<br>The workflow only requires the playlist’s unique identifier (`playlistId`), so you can replace it with any playlist later.
+* **YouTube Playlist**: we will ingest this playlist: https://www.youtube.com/playlist?list=PL5ErBr2d3QJH0kbwTQ7HSuzvBb4zIWzhy.<br>The workflow only requires the playlist’s unique identifier (`playlistId`), so you can replace it with any playlist later.
 * **YouTube API Key**: created in the [Google Cloud Console](https://cloud.google.com/).
 
 ### Secure Storage
@@ -66,7 +66,7 @@ Blueprints are completely customizable, but they all follow the same basic struc
 > Before defining blueprint properties, decide what questions you want to answer.<br>
 > A good data model starts from the use-case, not from the API response.
 
-In our case, we want to create a playlist and assess the "video quality" singals of its videos like readability and engagement.
+In our case, we want to create a playlist and assess the "video quality" signals of its videos like readability and engagement.
 
 These are the propeties we want to use:
 
@@ -78,7 +78,7 @@ These are the propeties we want to use:
 | `durationSeconds`| `number`               | No       | Helps evaluate viewing experience and filter very long/short videos. |
 | `viewCount`      | `number`               | No       | Enables popularity and ranking visualizations.                       |
 | `likeCount`      | `number`               | No       | Measures positive engagement quality.                                |
-| `commentCount`   | `number`               | No       | 	Indicates interaction level and audience engagement.                |
+| `commentCount`   | `number`               | No       | Indicates interaction level and audience engagement.                |
 
 
 **YouTube Playlist Blueprint**
@@ -378,7 +378,7 @@ In this guide, we create a scorecard called **“The Playlist Pulse”** to eval
 1. Log in to **Port**.
 2. Navigate to **Builder → Scorecards**.
 3. Click **+ Scorecard**.
-4. Choose the target blueprint:`YouTube Video`.
+4. Choose the target blueprint: `YouTube Video`.
 5. Name the scorecard (e.g., The Playlist Pulse).
 6. Add rules according to the maturity model above.
 7. Save the scorecard.
@@ -539,7 +539,7 @@ When you hover over a segment of the chart, Port displays the exact percentage o
 7. Apply a **Filter**: show only the top 10 videos with the most views.
 
 This widget highlights your highest-impact videos based on audience engagement.
-Using both sorting and filtter ensures you focus on the most relevant entities.
+Using both sorting and filters ensure you focus on the most relevant entities.
 
 ![Table Chart](assets/viz-table.png)
 
