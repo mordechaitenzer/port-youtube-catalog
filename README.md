@@ -1,6 +1,6 @@
 # Ingesting External Data into Port: A Complete Guide
 
-This step-by-step guide explains how to model, ingest, and visualize external data in a developer portal using Port.
+This step-by-step guide demonstrates how Port can transform external API data into a structured, governed, and actionable catalog inside your developer portal.
 
 
 While we use a YouTube playlist and its videos as our example, the same pattern applies to any operational source, such as microservices, CI/CD pipelines, monitoring systems, or cloud resources.
